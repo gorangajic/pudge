@@ -2,8 +2,6 @@
 
 ![pudge](http://i.imgur.com/3I2ISik.png)
 
-> simple node.js hook utility
-
     npm install pudge --save
 
     var pudge = require('pudge');
