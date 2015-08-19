@@ -1,7 +1,12 @@
 # Pudge
 
+![pudge](http://i.imgur.com/3I2ISik.png)
+
 > simple node.js hook utility
 
+    npm install pudge --save
+
+    var pudge = require('pudge');
 
     pudge.register('AFTER_HOOKED', function rot(player) {
         console.log('turned rot on');
@@ -24,4 +29,3 @@
     // eating dendi
     // ultra kill
 
-![pudge](http://i.imgur.com/3I2ISik.png)
