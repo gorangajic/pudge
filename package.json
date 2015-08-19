@@ -1,0 +1,31 @@
+{
+  "name": "pudge",
+  "version": "1.0.0",
+  "description": "simple hook utilities",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/gorangajic/pudge.git"
+  },
+  "keywords": [
+    "hook",
+    "hooks",
+    "utilites"
+  ],
+  "author": "Goran Gajic <fero.null@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/gorangajic/pudge/issues"
+  },
+  "homepage": "https://github.com/gorangajic/pudge#readme",
+  "dependencies": {
+    "bluebird": "^2.9.34"
+  },
+  "devDependencies": {
+    "mocha": "^2.2.5",
+    "sinon": "^1.15.4"
+  }
+}
