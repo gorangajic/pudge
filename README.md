@@ -2,28 +2,37 @@
 
 ![pudge](http://i.imgur.com/3I2ISik.png)
 
-    npm install pudge --save
 
-    var pudge = require('pudge');
+### install
 
-    pudge.register('AFTER_HOOKED', function rot(player) {
-        console.log('turned rot on');
-        return Promise.resolve();
-    });
-
-    pudge.register('AFTER_HOOKED', function dismemberr(player) {
-        console.log('eating', player.username);
-        return EatPlayer(player);
-    });
+```
+npm install pudge --save
+```
 
 
+### usage
+```javascript
 
-    pudge.run('AFTER_HOOK', player).then(function() {
-        console.log('ultra kill')
-    });
+var pudge = require('pudge');
+
+pudge.register('AFTER_HOOKED', function rot(player) {
+    console.log('turned rot on');
+    return Promise.resolve();
+});
+
+pudge.register('AFTER_HOOKED', function dismemberr(player) {
+    console.log('eating', player.username);
+    return EatPlayer(player);
+});
 
 
-    // turned rot on
-    // eating dendi
-    // ultra kill
 
+pudge.run('AFTER_HOOK', player).then(function() {
+    console.log('ultra kill')
+});
+
+
+// turned rot on
+// eating dendi
+// ultra kill
+```
