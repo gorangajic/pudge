@@ -4,7 +4,7 @@
   "description": "simple node.js hook utility",
   "main": "index.js",
   "scripts": {
-    "test": "npm test"
+    "test": "mocha test"
   },
   "repository": {
     "type": "git",
