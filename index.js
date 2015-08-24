@@ -22,6 +22,10 @@ module.exports.run = function(hook) {
     var current = Promise.resolve();
     var args = Array.prototype.slice.call(arguments);
 
+    if (!hooks[hook]) {
+        hooks[hook] = [];
+    }
+
     // remove first argument
     args.shift();
 
