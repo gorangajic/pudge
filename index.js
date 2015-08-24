@@ -37,3 +37,10 @@ module.exports.run = function(hook) {
     }));
 };
 
+module.exports.___clearHooks = function(hookName) {
+    if (typeof hookName !== "undefined") {
+        hooks[hookName] = [];
+        return true;
+    }
+    hooks = {};
+};

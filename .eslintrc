@@ -4,6 +4,7 @@
         "mocha": true
     },
     "rules": {
-        "quotes": 0
+        "quotes": 0,
+        "no-underscore-dangle": 0
     }
 }
