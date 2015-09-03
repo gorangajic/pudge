@@ -2,6 +2,8 @@
 
 var Promise = require('bluebird');
 var hooks = {};
+var beforeHooks = {};
+var afterHooks = {};
 
 function register(hookName, fn) {
     if (Array.isArray(hookName)) {
@@ -18,29 +20,70 @@ function register(hookName, fn) {
 
 module.exports.register = register;
 
-module.exports.run = function(hook) {
+function runHook(fns, args) {
     var current = Promise.resolve();
-    var args = Array.prototype.slice.call(arguments);
-
-    if (!hooks[hook]) {
-        hooks[hook] = [];
+    if (!fns) {
+        fns = [];
     }
-
-    // remove first argument
-    args.shift();
-
-    return Promise.all(hooks[hook].map(function(fn){
+    return Promise.all(fns.map(function(fn){
         current = current.then(function() {
             return fn.apply(this, args);
         });
         return current;
     }));
-};
+}
 
+module.exports.run = function(hook) {
+
+    var args = Array.prototype.slice.call(arguments);
+
+    // remove first argument
+    args.shift();
+
+    return runHook(beforeHooks[hook], args).then(function() {
+        return runHook(hooks[hook], args);
+    }).then(function() {
+        return runHook(afterHooks[hook], args);
+    });
+};
 module.exports.___clearHooks = function(hookName) {
     if (typeof hookName !== "undefined") {
         hooks[hookName] = [];
+        beforeHooks[hookName] = [];
+        afterHooks[hookName] = [];
         return true;
     }
     hooks = {};
+    beforeHooks = {};
+    afterHooks = {};
+
 };
+function before(hookName, fn) {
+    if (Array.isArray(hookName)) {
+        hookName.forEach(function(hook) {
+            before(hook, fn);
+        });
+        return;
+    }
+    if (!beforeHooks[hookName]) {
+        beforeHooks[hookName] = [];
+    }
+    beforeHooks[hookName].push(fn);
+};
+
+module.exports.before = before;
+
+function after(hookName, fn) {
+    if (Array.isArray(hookName)) {
+        hookName.forEach(function(hook) {
+            after(hook, fn);
+        });
+        return;
+    }
+    if (!afterHooks[hookName]) {
+        afterHooks[hookName] = [];
+    }
+    afterHooks[hookName].push(fn);
+};
+
+module.exports.after = after;

@@ -6,6 +6,10 @@ var sinon = require('sinon');
 var assert = require('assert');
 
 describe('Pudge', function() {
+    beforeEach(function() {
+        pudge.___clearHooks();
+    });
+
     it('should save and call hook', function(done) {
         var spy = sinon.spy();
         pudge.register("FRESH_MEET", spy);
@@ -46,5 +50,27 @@ describe('Pudge', function() {
             assert(spy.calledTwice, 'should be called twice');
             done();
         });
+    });
+
+    it('should call \'before handler\' before other handlers', function(done){
+        var spy = sinon.spy();
+        pudge.register("FRESH_MEET", spy);
+        pudge.before("FRESH_MEET", function() {
+            sinon.assert.notCalled(spy);
+            done();
+        });
+
+        pudge.run("FRESH_MEET").catch(done);
+    });
+
+    it('should call \'after handler\' after other handlers', function(done){
+        var spy = sinon.spy();
+        pudge.after("FRESH_MEET", function() {
+            sinon.assert.calledOnce(spy);
+            done();
+        });
+        pudge.register("FRESH_MEET", spy);
+
+        pudge.run("FRESH_MEET").catch(done);
     });
 });
