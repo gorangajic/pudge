@@ -1,5 +1,7 @@
 # Pudge
 
+[![Build Status](https://semaphoreci.com/api/v1/projects/5bcbf059-07fd-4b8f-afb2-e54537f1fb70/539259/badge.svg)](https://semaphoreci.com/feroc1ty/pudge-2)
+
 ![pudge](http://i.imgur.com/3I2ISik.png)
 
 
