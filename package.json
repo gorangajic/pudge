@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/gorangajic/pudge#readme",
   "dependencies": {
-    "bluebird": "2.10.1"
+    "bluebird": "2.10.2"
   },
   "devDependencies": {
     "mocha": "2.3.3",
