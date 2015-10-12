@@ -74,6 +74,28 @@ describe('Pudge', function() {
         pudge.run("FRESH_MEAT").catch(done);
     });
 
+    it('should map the results', function() {
+        it('should map the results', function(done) {
+            pudge.register('ROOT', 'head', function() {
+                return Promise.delay(10).then(function() {
+                    return "I_AM_HEAD";
+                });
+            });
+
+            pudge.register('ROOT', 'leg', function() {
+                return Promise.delay(10).then(function() {
+                    return "I_AM_LEG";
+                });
+            });
+
+            pudge.run('ROOT').then(function(results) {
+                assert(results.leg === "I_AM_LEG");
+                assert(results.head === "I_AM_HEAD");
+                done();
+            }).catch(done);
+        });
+    });
+
     describe('parallel', function() {
         it('should run tasks in parallel', function(done) {
             var startTime = Date.now();
@@ -96,6 +118,25 @@ describe('Pudge', function() {
                 var endTime = Date.now();
                 assert(endTime > startTime + 80, 'should be greater than 80ms');
                 assert(endTime < startTime + 100, 'should be less than 100ms');
+                done();
+            }).catch(done);
+        });
+        it('should map the results', function(done) {
+            pudge.register('ROOT', 'head', function() {
+                return Promise.delay(10).then(function() {
+                    return "I_AM_HEAD";
+                });
+            });
+
+            pudge.register('ROOT', 'leg', function() {
+                return Promise.delay(10).then(function() {
+                    return "I_AM_LEG";
+                });
+            });
+
+            pudge.parallel('ROOT').then(function(results) {
+                assert(results.leg === "I_AM_LEG");
+                assert(results.head === "I_AM_HEAD");
                 done();
             }).catch(done);
         });

@@ -2,74 +2,110 @@
 
 var Promise = require('bluebird');
 var store = require('./store');
-
+var extend = require('extend');
 var NORMAL = 1;
 var BEFORE = 2;
 var AFTER = 3;
 
-function addHook(type, name, fn) {
+function addHook(type, name, key, fn) {
     if (Array.isArray(name)) {
         name.forEach(function(n) {
-            addHook(type, n, fn);
+            addHook(type, n, key, fn);
         });
         return;
     }
-    store.add(type, name, fn);
-}
-
-function register(name, fn) {
-    addHook(NORMAL, name, fn);
-}
-
-exports.register = register;
-
-function runHook(fns, args) {
-    var current = Promise.resolve();
-    if (!fns) {
-        fns = [];
+    if (typeof key === "function") {
+        fn = key;
+        key = undefined;
     }
-    return Promise.all(fns.map(function(fn){
+    store.add(type, name, {
+        fn: fn,
+        key: key
+    });
+}
+
+exports.register = addHook.bind(this, NORMAL);
+
+exports.before = addHook.bind(this, BEFORE);
+
+exports.after = addHook.bind(this, AFTER);
+
+function runHook(hooks, args) {
+    var current = Promise.resolve();
+    if (!hooks) {
+        hooks = [];
+    }
+    var results = {};
+    return Promise.all(hooks.map(function(hook){
+        var fn = hook.fn;
         current = current.then(function() {
             return fn.apply(this, args);
         });
-        return current;
-    }));
+        return current.then(function(result) {
+            if (hook.key) {
+                results[hook.key] = result;
+            }
+            return result;
+        });
+    })).then(function() {
+        return results;
+    });
 }
 
-function runHookParallel(fns, args) {
-    if (!fns) {
-        fns = [];
+function runHookParallel(hooks, args) {
+    if (!hooks) {
+        hooks = [];
     }
-    return Promise.all(fns.map(function(fn){
+    return Promise.all(hooks.map(function(hook){
+        var fn = hook.fn;
         return fn.apply(this, args);
-    }));
+    })).then(function(results) {
+        var props = {};
+        results.forEach(function(result, index) {
+            var key = hooks[index].key;
+            if (key) {
+                props[key] = result;
+            }
+        });
+        return props;
+    });
 }
 
 exports.run = function(name) {
-
+    var result = {};
     var args = Array.prototype.slice.call(arguments);
 
     // remove first argument
     args.shift();
 
-    return runHook(store.get(BEFORE, name), args).then(function() {
+    return runHook(store.get(BEFORE, name), args).then(function(beforeResult) {
+        result = extend(result, beforeResult);
         return runHook(store.get(NORMAL, name), args);
-    }).then(function() {
+    }).then(function(normalResult) {
+        result = extend(result, normalResult);
         return runHook(store.get(AFTER, name), args);
+    }).then(function(afterResult) {
+        result = extend(result, afterResult);
+        return result;
     });
 };
 
 exports.parallel = function(name) {
-
+    var result = {};
     var args = Array.prototype.slice.call(arguments);
 
     // remove first argument
     args.shift();
 
-    return runHookParallel(store.get(BEFORE, name), args).then(function() {
+    return runHookParallel(store.get(BEFORE, name), args).then(function(beforeResult) {
+        result = extend(result, beforeResult);
         return runHookParallel(store.get(NORMAL, name), args);
-    }).then(function() {
+    }).then(function(normalResult) {
+        result = extend(result, normalResult);
         return runHookParallel(store.get(AFTER, name), args);
+    }).then(function(afterResult) {
+        result = extend(result, afterResult);
+        return result;
     });
 };
 
@@ -78,14 +114,3 @@ exports.___clearHooks = function(name) {
     store.clear(name);
 };
 
-function before(name, fn) {
-    addHook(BEFORE, name, fn);
-}
-
-exports.before = before;
-
-function after(name, fn) {
-    addHook(AFTER, name, fn);
-}
-
-exports.after = after;
