@@ -33,6 +33,15 @@ function runHook(fns, args) {
     }));
 }
 
+function runHookParallel(fns, args) {
+    if (!fns) {
+        fns = [];
+    }
+    return Promise.all(fns.map(function(fn){
+        return fn.apply(this, args);
+    }));
+}
+
 module.exports.run = function(hook) {
 
     var args = Array.prototype.slice.call(arguments);
@@ -46,6 +55,22 @@ module.exports.run = function(hook) {
         return runHook(afterHooks[hook], args);
     });
 };
+
+module.exports.parallel = function(hook) {
+
+    var args = Array.prototype.slice.call(arguments);
+
+    // remove first argument
+    args.shift();
+
+    return runHookParallel(beforeHooks[hook], args).then(function() {
+        return runHookParallel(hooks[hook], args);
+    }).then(function() {
+        return runHookParallel(afterHooks[hook], args);
+    });
+};
+
+
 module.exports.___clearHooks = function(hookName) {
     if (typeof hookName !== "undefined") {
         hooks[hookName] = [];
@@ -58,6 +83,7 @@ module.exports.___clearHooks = function(hookName) {
     afterHooks = {};
 
 };
+
 function before(hookName, fn) {
     if (Array.isArray(hookName)) {
         hookName.forEach(function(hook) {
@@ -69,7 +95,7 @@ function before(hookName, fn) {
         beforeHooks[hookName] = [];
     }
     beforeHooks[hookName].push(fn);
-};
+}
 
 module.exports.before = before;
 
@@ -84,6 +110,6 @@ function after(hookName, fn) {
         afterHooks[hookName] = [];
     }
     afterHooks[hookName].push(fn);
-};
+}
 
 module.exports.after = after;

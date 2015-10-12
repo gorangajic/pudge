@@ -74,6 +74,30 @@ describe('Pudge', function() {
         pudge.run("FRESH_MEAT").catch(done);
     });
 
-        pudge.run("FRESH_MEET").catch(done);
+    describe('parallel', function() {
+        it('should run tasks in parallel', function(done) {
+            var startTime = Date.now();
+            pudge.register("FRESH_ROOT_MEAT", function() {
+                return Promise.delay(80);
+            });
+            pudge.register("FRESH_ROOT_MEAT", function() {
+                return Promise.delay(80);
+            });
+
+            pudge.register("FRESH_ROOT_MEAT", function() {
+                return Promise.delay(50);
+            });
+
+            pudge.register("FRESH_ROOT_MEAT", function() {
+                return Promise.delay(76);
+            });
+
+            pudge.parallel("FRESH_ROOT_MEAT").then(function() {
+                var endTime = Date.now();
+                assert(endTime > startTime + 80, 'should be greater than 80ms');
+                assert(endTime < startTime + 100, 'should be less than 100ms');
+                done();
+            }).catch(done);
+        });
     });
 });
