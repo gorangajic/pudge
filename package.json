@@ -1,6 +1,6 @@
 {
   "name": "pudge",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "simple node.js hook utility",
   "main": "index.js",
   "scripts": {
