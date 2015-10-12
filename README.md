@@ -60,7 +60,7 @@ pudge.register('PUDGE_AWESOME_HOOK', function(arg1, arg2, arg3) {
 run registred hooks one after another
 
 ```javascript
-pudge.run('PUDGE_AWESOME_HOOK', arg1, arg2, arg3, function() {
+pudge.run('PUDGE_AWESOME_HOOK', arg1, arg2, arg3).then(function() {
 
 });
 ```
@@ -70,10 +70,9 @@ pudge.run('PUDGE_AWESOME_HOOK', arg1, arg2, arg3, function() {
 run registred hooks in parallel
 
 ```javascript
-pudge.parallel('PUDGE_AWESOME_HOOK', arg1, arg2, arg3, function() {
+pudge.parallel('PUDGE_AWESOME_HOOK', arg1, arg2, arg3).then(function() {
 
 });
 ```
-
 
 
