@@ -54,22 +54,25 @@ describe('Pudge', function() {
 
     it('should call \'before handler\' before other handlers', function(done){
         var spy = sinon.spy();
-        pudge.register("FRESH_MEET", spy);
-        pudge.before("FRESH_MEET", function() {
+        pudge.register("FRESH_MEAT", spy);
+        pudge.before("FRESH_MEAT", function() {
             sinon.assert.notCalled(spy);
             done();
         });
 
-        pudge.run("FRESH_MEET").catch(done);
+        pudge.run("FRESH_MEAT").catch(done);
     });
 
     it('should call \'after handler\' after other handlers', function(done){
         var spy = sinon.spy();
-        pudge.after("FRESH_MEET", function() {
+        pudge.after("FRESH_MEAT", function() {
             sinon.assert.calledOnce(spy);
             done();
         });
-        pudge.register("FRESH_MEET", spy);
+        pudge.register("FRESH_MEAT", spy);
+
+        pudge.run("FRESH_MEAT").catch(done);
+    });
 
         pudge.run("FRESH_MEET").catch(done);
     });
