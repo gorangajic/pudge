@@ -4,7 +4,7 @@ var Promise = require('bluebird');
 var pudge = require('./index');
 var sinon = require('sinon');
 var assert = require('assert');
-
+var store = require('store');
 describe('Pudge', function() {
     beforeEach(function() {
         pudge.___clearHooks();
@@ -98,6 +98,18 @@ describe('Pudge', function() {
                 assert(endTime < startTime + 100, 'should be less than 100ms');
                 done();
             }).catch(done);
+        });
+    });
+
+    describe('store', function() {
+        beforeEach(function() {
+            store.clear();
+        });
+
+        it('should add and get from store', function() {
+            store.add('normal', 'FRESH_MEAT', 'something');
+            var result = store.get('normal', 'FRESH_MEAT');
+            assert(result == 'something');
         });
     });
 });

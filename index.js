@@ -1,24 +1,27 @@
 "use strict";
 
 var Promise = require('bluebird');
-var hooks = {};
-var beforeHooks = {};
-var afterHooks = {};
+var store = require('./store');
 
-function register(hookName, fn) {
-    if (Array.isArray(hookName)) {
-        hookName.forEach(function(hook) {
-            register(hook, fn);
+var NORMAL = 1;
+var BEFORE = 2;
+var AFTER = 3;
+
+function addHook(type, name, fn) {
+    if (Array.isArray(name)) {
+        name.forEach(function(n) {
+            addHook(type, n, fn);
         });
         return;
     }
-    if (!hooks[hookName]) {
-        hooks[hookName] = [];
-    }
-    hooks[hookName].push(fn);
+    store.add(type, name, fn);
 }
 
-module.exports.register = register;
+function register(name, fn) {
+    addHook(NORMAL, name, fn);
+}
+
+exports.register = register;
 
 function runHook(fns, args) {
     var current = Promise.resolve();
@@ -42,74 +45,47 @@ function runHookParallel(fns, args) {
     }));
 }
 
-module.exports.run = function(hook) {
+exports.run = function(name) {
 
     var args = Array.prototype.slice.call(arguments);
 
     // remove first argument
     args.shift();
 
-    return runHook(beforeHooks[hook], args).then(function() {
-        return runHook(hooks[hook], args);
+    return runHook(store.get(BEFORE, name), args).then(function() {
+        return runHook(store.get(NORMAL, name), args);
     }).then(function() {
-        return runHook(afterHooks[hook], args);
+        return runHook(store.get(AFTER, name), args);
     });
 };
 
-module.exports.parallel = function(hook) {
+exports.parallel = function(name) {
 
     var args = Array.prototype.slice.call(arguments);
 
     // remove first argument
     args.shift();
 
-    return runHookParallel(beforeHooks[hook], args).then(function() {
-        return runHookParallel(hooks[hook], args);
+    return runHookParallel(store.get(BEFORE, name), args).then(function() {
+        return runHookParallel(store.get(NORMAL, name), args);
     }).then(function() {
-        return runHookParallel(afterHooks[hook], args);
+        return runHookParallel(store.get(AFTER, name), args);
     });
 };
 
 
-module.exports.___clearHooks = function(hookName) {
-    if (typeof hookName !== "undefined") {
-        hooks[hookName] = [];
-        beforeHooks[hookName] = [];
-        afterHooks[hookName] = [];
-        return true;
-    }
-    hooks = {};
-    beforeHooks = {};
-    afterHooks = {};
-
+exports.___clearHooks = function(name) {
+    store.clear(name);
 };
 
-function before(hookName, fn) {
-    if (Array.isArray(hookName)) {
-        hookName.forEach(function(hook) {
-            before(hook, fn);
-        });
-        return;
-    }
-    if (!beforeHooks[hookName]) {
-        beforeHooks[hookName] = [];
-    }
-    beforeHooks[hookName].push(fn);
+function before(name, fn) {
+    addHook(BEFORE, name, fn);
 }
 
-module.exports.before = before;
+exports.before = before;
 
-function after(hookName, fn) {
-    if (Array.isArray(hookName)) {
-        hookName.forEach(function(hook) {
-            after(hook, fn);
-        });
-        return;
-    }
-    if (!afterHooks[hookName]) {
-        afterHooks[hookName] = [];
-    }
-    afterHooks[hookName].push(fn);
+function after(name, fn) {
+    addHook(AFTER, name, fn);
 }
 
-module.exports.after = after;
+exports.after = after;
