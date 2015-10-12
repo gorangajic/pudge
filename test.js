@@ -4,7 +4,8 @@ var Promise = require('bluebird');
 var pudge = require('./index');
 var sinon = require('sinon');
 var assert = require('assert');
-var store = require('store');
+var store = require('./store');
+
 describe('Pudge', function() {
     beforeEach(function() {
         pudge.___clearHooks();
