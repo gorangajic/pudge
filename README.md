@@ -38,3 +38,42 @@ pudge.run('AFTER_HOOK', player).then(function() {
 // eating dendi
 // ultra kill
 ```
+
+
+## API
+
+#### register(hookName, callback)
+
+- register method to be run when hook happend
+- callback will receive arguments that are passed in ```run``` or ```parallel```.
+- callback should return promise, so it's possible to know when hook is done
+
+```javascript
+pudge.register('PUDGE_AWESOME_HOOK', function(arg1, arg2, arg3) {
+    // do something when hook is run
+    return Promise.resolve();
+});
+```
+
+#### run(hookName, args...) -> Promise
+
+run registred hooks one after another
+
+```javascript
+pudge.run('PUDGE_AWESOME_HOOK', arg1, arg2, arg3, function() {
+
+});
+```
+
+#### parallel(hookName, args...) -> Promise
+
+run registred hooks in parallel
+
+```javascript
+pudge.parallel('PUDGE_AWESOME_HOOK', arg1, arg2, arg3, function() {
+
+});
+```
+
+
+
