@@ -150,7 +150,8 @@ describe('Pudge', function() {
         it('should add and get from store', function() {
             store.add('normal', 'FRESH_MEAT', 'something');
             var result = store.get('normal', 'FRESH_MEAT');
-            assert(result == 'something');
+            assert(result[0] === 'something');
         });
     });
+
 });
