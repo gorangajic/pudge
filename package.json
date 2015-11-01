@@ -26,7 +26,8 @@
   },
   "devDependencies": {
     "mocha": "2.3.3",
-    "sinon": "1.17.2"
+    "sinon": "1.17.2",
+    "bluebird": "3.0.3"
   },
   "peerDependencies": {
     "bluebird": "*"
