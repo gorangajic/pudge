@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/gorangajic/pudge#readme",
   "dependencies": {
-    "bluebird": "3.0.2",
+    "bluebird": "3.0.3",
     "extend": "^3.0.0"
   },
   "devDependencies": {
