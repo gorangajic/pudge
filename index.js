@@ -3,25 +3,40 @@
 var Promise = require('bluebird');
 var store = require('./store');
 var extend = require('extend');
-var NORMAL = 1;
-var BEFORE = 2;
-var AFTER = 3;
+var NORMAL = 'NORMAL';
+var BEFORE = 'BEFORE';
+var AFTER = 'AFTER';
 
 function addHook(type, name, key, fn) {
     if (Array.isArray(name)) {
         name.forEach(function(n) {
             addHook(type, n, key, fn);
         });
-        return;
+        return {
+            key: typeof key === "function" ? undefined : key,
+            cb: typeof key === "function" ? key : fn,
+            name: name,
+            type: type
+        };
     }
+
     if (typeof key === "function") {
         fn = key;
         key = undefined;
     }
+
+
     store.add(type, name, {
         fn: fn,
         key: key
     });
+
+    return {
+        key: key,
+        cb: fn,
+        name: name,
+        type: type
+    };
 }
 
 exports.register = addHook.bind(this, NORMAL);

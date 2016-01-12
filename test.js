@@ -143,6 +143,42 @@ describe('Pudge', function() {
         });
     });
 
+
+    describe('metadata', function() {
+        it('should register and return without key', function() {
+            var awesomeFn = function() {};
+            var meta = pudge.register('OLA', awesomeFn);
+            assert(meta.cb === awesomeFn, 'cb should be passed back');
+            assert(meta.key === undefined, 'key should be undefined');
+            assert(meta.name === "OLA", 'name should be defined');
+        });
+
+        it('should register and return with key', function() {
+            var awesomeFn = function() {};
+            var meta = pudge.register('OLA', 'name', awesomeFn);
+            assert(meta.cb === awesomeFn, 'cb should be passed back');
+            assert(meta.key === 'name', 'key should be undefined');
+            assert(meta.name === "OLA", 'name should be defined');
+        });
+
+        it('should return NORMAL type for register', function() {
+            var awesomeFn = function() {};
+            var meta = pudge.register('OLA', 'name', awesomeFn);
+            assert(meta.type === "NORMAL");
+        });
+        it('should return BEFORE type for before', function() {
+            var awesomeFn = function() {};
+            var meta = pudge.before('OLA', 'name', awesomeFn);
+            assert(meta.type === "BEFORE");
+        });
+
+        it('should return AFTER type for after', function() {
+            var awesomeFn = function() {};
+            var meta = pudge.after('OLA', 'name', awesomeFn);
+            assert(meta.type === "AFTER");
+        });
+    });
+
     describe('store', function() {
         beforeEach(function() {
             store.clear();
