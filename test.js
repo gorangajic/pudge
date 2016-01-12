@@ -117,8 +117,9 @@ describe('Pudge', function() {
 
             pudge.parallel("FRESH_ROOT_MEAT").then(function() {
                 var endTime = Date.now();
-                assert(endTime > startTime + 80, 'should be greater than 80ms');
-                assert(endTime < startTime + 100, 'should be less than 100ms');
+                var diff = endTime - startTime;
+                assert(endTime >= startTime + 80, 'should be greater than 80ms -> ' + diff);
+                assert(endTime < startTime + 100, 'should be less than 100ms -> ' + diff);
                 done();
             }).catch(done);
         });
