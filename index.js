@@ -14,7 +14,7 @@ function addHook(type, name, key, fn) {
         });
         return {
             key: typeof key === "function" ? undefined : key,
-            cb: typeof key === "function" ? key : fn,
+            run: typeof key === "function" ? key : fn,
             name: name,
             type: type
         };
@@ -33,7 +33,7 @@ function addHook(type, name, key, fn) {
 
     return {
         key: key,
-        cb: fn,
+        run: fn,
         name: name,
         type: type
     };

@@ -149,7 +149,7 @@ describe('Pudge', function() {
         it('should register and return without key', function() {
             var awesomeFn = function() {};
             var meta = pudge.register('OLA', awesomeFn);
-            assert(meta.cb === awesomeFn, 'cb should be passed back');
+            assert(meta.run === awesomeFn, 'run should be passed back');
             assert(meta.key === undefined, 'key should be undefined');
             assert(meta.name === "OLA", 'name should be defined');
         });
@@ -157,7 +157,7 @@ describe('Pudge', function() {
         it('should register and return with key', function() {
             var awesomeFn = function() {};
             var meta = pudge.register('OLA', 'name', awesomeFn);
-            assert(meta.cb === awesomeFn, 'cb should be passed back');
+            assert(meta.run === awesomeFn, 'run should be passed back');
             assert(meta.key === 'name', 'key should be undefined');
             assert(meta.name === "OLA", 'name should be defined');
         });
