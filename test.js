@@ -192,4 +192,16 @@ describe('Pudge', function() {
         });
     });
 
+    it('should attach it\'self after being cleared', function(done) {
+        var hook = pudge.register('EAT_SOMETHING', function(result) {
+            assert(result === 'ok');
+            done();
+        });
+        store.clear();
+        assert(store.get('NORMAL', 'EAT_SOMETHING').length === 0, 'have length of 0');
+        hook.attach();
+        assert(store.get('NORMAL', 'EAT_SOMETHING').length === 1, 'have length of 1');
+
+        pudge.run('EAT_SOMETHING', 'ok');
+    });
 });

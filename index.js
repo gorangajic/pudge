@@ -8,34 +8,32 @@ var BEFORE = 'BEFORE';
 var AFTER = 'AFTER';
 
 function addHook(type, name, key, fn) {
-    if (Array.isArray(name)) {
-        name.forEach(function(n) {
-            addHook(type, n, key, fn);
-        });
-        return {
-            key: typeof key === "function" ? undefined : key,
-            run: typeof key === "function" ? key : fn,
-            name: name,
-            type: type
-        };
-    }
+    var attach = function() {
+        return addHook(type, name, key, fn);
+    };
 
     if (typeof key === "function") {
         fn = key;
         key = undefined;
     }
 
-
-    store.add(type, name, {
-        fn: fn,
-        key: key
-    });
+    if (Array.isArray(name)) {
+        name.forEach(function(n) {
+            addHook(type, n, key, fn);
+        });
+    } else {
+        store.add(type, name, {
+            fn: fn,
+            key: key
+        });
+    }
 
     return {
         key: key,
         run: fn,
         name: name,
-        type: type
+        type: type,
+        attach: attach
     };
 }
 
