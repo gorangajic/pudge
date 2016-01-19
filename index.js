@@ -123,7 +123,6 @@ exports.parallel = function(name) {
 };
 
 
-exports.___clearHooks = function(name) {
+exports.clear = exports.___clearHooks = function(name) {
     store.clear(name);
 };
-
