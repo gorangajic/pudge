@@ -37,7 +37,7 @@ function addHook(type, name, key, fn) {
     };
 }
 
-exports.register = addHook.bind(this, NORMAL);
+exports.on = exports.register = addHook.bind(this, NORMAL);
 
 exports.before = addHook.bind(this, BEFORE);
 
