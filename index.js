@@ -6,6 +6,7 @@ var extend = require('extend');
 var NORMAL = 'NORMAL';
 var BEFORE = 'BEFORE';
 var AFTER = 'AFTER';
+var debug = require('debug')('pudge');
 
 function addHook(type, name, key, fn) {
     var attach = function() {
@@ -22,6 +23,7 @@ function addHook(type, name, key, fn) {
             addHook(type, n, key, fn);
         });
     } else {
+        debug('adding hook', type, name);
         store.add(type, name, {
             fn: fn,
             key: key
@@ -90,15 +92,18 @@ exports.run = function(name) {
 
     // remove first argument
     args.shift();
-
+    debug('run BEFORE hooks', name);
     return runHook(store.get(BEFORE, name), args).then(function(beforeResult) {
         result = extend(result, beforeResult);
+        debug('run NORMAL hooks', name);
         return runHook(store.get(NORMAL, name), args);
     }).then(function(normalResult) {
         result = extend(result, normalResult);
+        debug('run AFTER hooks', name);
         return runHook(store.get(AFTER, name), args);
     }).then(function(afterResult) {
         result = extend(result, afterResult);
+        debug('hook', name, 'finished')
         return result;
     });
 };
@@ -109,12 +114,14 @@ exports.parallel = function(name) {
 
     // remove first argument
     args.shift();
-
+    debug('parallel BEFORE hooks', name);
     return runHookParallel(store.get(BEFORE, name), args).then(function(beforeResult) {
         result = extend(result, beforeResult);
+        debug('parallel NORMAL hooks', name);
         return runHookParallel(store.get(NORMAL, name), args);
     }).then(function(normalResult) {
         result = extend(result, normalResult);
+        debug('parallel AFTER hooks', name);
         return runHookParallel(store.get(AFTER, name), args);
     }).then(function(afterResult) {
         result = extend(result, afterResult);
