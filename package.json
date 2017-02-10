@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/gorangajic/pudge#readme",
   "dependencies": {
-    "debug": "2.4.5",
+    "debug": "2.6.1",
     "extend": "^3.0.0"
   },
   "devDependencies": {
