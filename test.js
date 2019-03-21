@@ -1,10 +1,14 @@
 "use strict";
-
-var Promise = require('bluebird');
 var pudge = require('./index');
 var sinon = require('sinon');
 var assert = require('assert');
 var store = require('./store');
+
+function delay(ms) {
+    return new Promise(function(resolve){
+        setTimeout(resolve, ms);
+    });
+}
 
 describe('Pudge', function() {
     beforeEach(function() {
@@ -44,10 +48,10 @@ describe('Pudge', function() {
     it('can register more than one listener', function(done) {
         var spy = sinon.spy();
         pudge.register(["PUDGE_IS_HERE", "COME_TO_PUDGE"], spy);
-        Promise.join(
+        Promise.all([
             pudge.run("PUDGE_IS_HERE"),
             pudge.run("COME_TO_PUDGE")
-        ).then(function() {
+        ]).then(function() {
             assert(spy.calledTwice, 'should be called twice');
             done();
         });
@@ -78,13 +82,13 @@ describe('Pudge', function() {
     it('should map the results', function() {
         it('should map the results', function(done) {
             pudge.register('ROOT', 'head', function() {
-                return Promise.delay(10).then(function() {
+                return delay(10).then(function() {
                     return "I_AM_HEAD";
                 });
             });
 
             pudge.register('ROOT', 'leg', function() {
-                return Promise.delay(10).then(function() {
+                return delay(10).then(function() {
                     return "I_AM_LEG";
                 });
             });
@@ -101,18 +105,18 @@ describe('Pudge', function() {
         it('should run tasks in parallel', function(done) {
             var startTime = Date.now();
             pudge.register("FRESH_ROOT_MEAT", function() {
-                return Promise.delay(80);
+                return delay(80);
             });
             pudge.register("FRESH_ROOT_MEAT", function() {
-                return Promise.delay(80);
-            });
-
-            pudge.register("FRESH_ROOT_MEAT", function() {
-                return Promise.delay(50);
+                return delay(80);
             });
 
             pudge.register("FRESH_ROOT_MEAT", function() {
-                return Promise.delay(76);
+                return delay(50);
+            });
+
+            pudge.register("FRESH_ROOT_MEAT", function() {
+                return delay(76);
             });
 
             pudge.parallel("FRESH_ROOT_MEAT").then(function() {
@@ -125,13 +129,13 @@ describe('Pudge', function() {
         });
         it('should map the results', function(done) {
             pudge.register('ROOT', 'head', function() {
-                return Promise.delay(10).then(function() {
+                return delay(10).then(function() {
                     return "I_AM_HEAD";
                 });
             });
 
             pudge.register('ROOT', 'leg', function() {
-                return Promise.delay(10).then(function() {
+                return delay(10).then(function() {
                     return "I_AM_LEG";
                 });
             });

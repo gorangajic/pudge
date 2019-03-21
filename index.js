@@ -1,8 +1,7 @@
 "use strict";
 
-var Promise = require('bluebird');
-var store = require('./store');
 var extend = require('extend');
+var store = require('./store');
 var NORMAL = 'NORMAL';
 var BEFORE = 'BEFORE';
 var AFTER = 'AFTER';
