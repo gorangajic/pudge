@@ -79,26 +79,24 @@ describe('Pudge', function() {
         pudge.run("FRESH_MEAT").catch(done);
     });
 
-    it('should map the results', function() {
-        it('should map the results', function(done) {
-            pudge.register('ROOT', 'head', function() {
-                return delay(10).then(function() {
-                    return "I_AM_HEAD";
-                });
+    it('should map the results', function(done) {
+        pudge.register('ROOT', 'head', function() {
+            return delay(10).then(function() {
+                return "I_AM_HEAD";
             });
-
-            pudge.register('ROOT', 'leg', function() {
-                return delay(10).then(function() {
-                    return "I_AM_LEG";
-                });
-            });
-
-            pudge.run('ROOT').then(function(results) {
-                assert(results.leg === "I_AM_LEG");
-                assert(results.head === "I_AM_HEAD");
-                done();
-            }).catch(done);
         });
+
+        pudge.register('ROOT', 'leg', function() {
+            return delay(10).then(function() {
+                return "I_AM_LEG";
+            });
+        });
+
+        pudge.run('ROOT').then(function(results) {
+            assert(results.leg === "I_AM_LEG");
+            assert(results.head === "I_AM_HEAD");
+            done();
+        }).catch(done);
     });
 
     describe('parallel', function() {

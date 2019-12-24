@@ -4,7 +4,7 @@
   "description": "simple node.js hook utility",
   "main": "index.js",
   "scripts": {
-    "test": "mocha test"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -23,10 +23,10 @@
   "homepage": "https://github.com/gorangajic/pudge#readme",
   "dependencies": {
     "debug": "4.1.1",
-    "extend": "^3.0.0"
+    "extend": "3.0.2"
   },
   "devDependencies": {
-    "mocha": "6.0.2",
+    "jest": "24.9.0",
     "sinon": "7.3.0"
   }
 }
